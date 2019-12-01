@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"encoding/json"
+	"fmt"
 	"os"
 	"strings"
+
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
@@ -16,10 +17,10 @@ import (
 
 // BodyRequest is our self-made struct to process JSON request from Client
 type BodyRequest struct {
-	RequestHeader string `json:"header"`
-	RequestContent string `json:"content"`
+	RequestHeader          string `json:"header"`
+	RequestContent         string `json:"content"`
 	RequestBackgroundColor string `json:"background-color"`
-	RequestFontColor string `json:"font-color"`
+	RequestFontColor       string `json:"font-color"`
 }
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -32,10 +33,10 @@ type Response events.APIGatewayProxyResponse
 func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Response, error) {
 	// BodyRequest will be used to take the json response from client and build it
 	bodyRequest := BodyRequest{
-		RequestHeader: "",
-		RequestContent: "",
+		RequestHeader:          "",
+		RequestContent:         "",
 		RequestBackgroundColor: "",
-		RequestFontColor: "",
+		RequestFontColor:       "",
 	}
 
 	//var test string
@@ -50,7 +51,6 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	if err != nil {
 		exitErrorf("Could not decode JSON object.")
 	}
-
 
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String("eu-west-2")},
@@ -81,9 +81,8 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	strData := string(data)
 	result := strings.Replace(strData, "<headervalue>", bodyRequest.RequestHeader, -1)
 	resultWithContent := strings.Replace(result, "<contentvalue>", bodyRequest.RequestContent, -1)
-	resultWithCSS := strings.Replace(resultWithContent, "<cssvalue>", "background-color:" + bodyRequest.RequestBackgroundColor, -1)
-	resultWithCSSandFont := strings.Replace(resultWithCSS, "<font-color>", "color:" + bodyRequest.RequestFontColor, -1)
-
+	resultWithCSS := strings.Replace(resultWithContent, "<cssvalue>", "background-color:"+bodyRequest.RequestBackgroundColor, -1)
+	resultWithCSSandFont := strings.Replace(resultWithCSS, "<font-color>", "color:"+bodyRequest.RequestFontColor, -1)
 
 	//for _, b := range result.Buckets {
 	//		fmt.Printf("* %s created on %s\n",
@@ -95,7 +94,7 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 		IsBase64Encoded: false,
 		Body:            string(body),
 		Headers: map[string]string{
-			"Content-Type":           "text/html",
+			"Content-Type":                "text/html",
 			"Access-Control-Allow-Origin": "*",
 		},
 	}

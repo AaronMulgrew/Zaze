@@ -63,11 +63,21 @@ package:
     - ./bin/**
 
 functions:
-  hello:
-    handler: bin/hello
+  generate_static_site:
+    handler: bin/generate_static_site
     events:
       - http:
-          path: hello
+          path: generate_static_site
+          method: post
+          cors: true
+          authorizer:
+              type: COGNITO_USER_POOLS
+              arn: arn:aws:cognito-idp:us-west-2:667540058414:userpool/us-west-2_hhUeZzp1b
+  post_to_s3:
+    handler: bin/post_to_s3
+    events:
+      - http:
+          path: post_to_s3
           method: post
           cors: true
           authorizer:
