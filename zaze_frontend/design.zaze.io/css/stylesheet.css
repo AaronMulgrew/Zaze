@@ -2,7 +2,7 @@ html {
 }
 
 a {
-  white-space: normal;
+  white-space: normal !important;
 }
 
 body {
