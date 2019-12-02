@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -15,10 +17,9 @@ import (
 
 // BodyRequest is our self-made struct to process JSON request from Client
 type BodyRequest struct {
-	RequestHeader          string `json:"header"`
-	RequestContent         string `json:"content"`
-	RequestBackgroundColor string `json:"background-color"`
-	RequestFontColor       string `json:"font-color"`
+	UserName     string `json:"username"`
+	HTMLContents string `json:"HTMLContents"`
+	Title        string `json:"title"`
 }
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -29,16 +30,24 @@ type Response events.APIGatewayProxyResponse
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Response, error) {
-	bucket := "zaze.io"
-	filename := "user_uploads/static_sites/xxxx/test.txt"
+	// BodyRequest will be used to take the json response from client and build it
+	bodyRequest := BodyRequest{
+		UserName:     "",
+		HTMLContents: "",
+		Title:        "",
+	}
 
-	// this is your data that you have in memory
-	// in this example it is hard coded but it may come from very distinct
-	// sources, like streaming services for example.
-	data := "Hello, world!"
+	err := json.Unmarshal([]byte(request.Body), &bodyRequest)
+	if err != nil {
+		exitErrorf("Could not decode JSON object. Error: %v", err)
+	}
+
+	log.Print("HTMLContents: " + bodyRequest.HTMLContents)
+	bucket := "zaze.io"
+	filename := "user_uploads/static_sites/" + bodyRequest.UserName + "/" + bodyRequest.Title + ".html"
 
 	// create a reader from data data in memory
-	reader := strings.NewReader(data)
+	reader := strings.NewReader(bodyRequest.HTMLContents)
 
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String("eu-west-2")},
@@ -53,16 +62,17 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 		Key:    aws.String(filename),
 		// here you pass your reader
 		// the aws sdk will manage all the memory and file reading for you
-		Body: reader,
+		Body:        reader,
+		ContentType: aws.String("text/html"),
 	})
 	if err != nil {
-		exitErrorf("Zero bytes returned error. Error: %v", err)
+		exitErrorf("S3 upload error. Error: %v", err)
 	}
 
 	resp := Response{
 		StatusCode:      200,
 		IsBase64Encoded: false,
-		Body:            "OK",
+		Body:            "https://users.zaze.io/" + bodyRequest.UserName + "/" + bodyRequest.Title + ".html",
 		Headers: map[string]string{
 			"Content-Type":                "text/html",
 			"Access-Control-Allow-Origin": "*",

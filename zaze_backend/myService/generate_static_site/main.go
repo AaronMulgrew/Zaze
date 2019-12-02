@@ -42,9 +42,7 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	//var test string
 	//test = "<html><h1>hello world</h1></html>"
 
-	//body, err := json.Marshal(map[string]interface{}{
-	//	"message": test,
-	//})
+	// Get a AWS buffer ready for our S3 Data...
 	buff := &aws.WriteAtBuffer{}
 
 	err := json.Unmarshal([]byte(request.Body), &bodyRequest)

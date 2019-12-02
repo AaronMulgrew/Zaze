@@ -2,6 +2,7 @@
 
 build:
 	dep ensure -v
+	set GOARCH=amd64
 	set GOOS=linux
 	go build -ldflags="-s -w" -o bin/generate_static_site generate_static_site/main.go
 	go build -ldflags="-s -w" -o bin/post_to_s3 post_to_s3/main.go

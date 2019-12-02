@@ -68,12 +68,16 @@
 		</div>
 	</div>
 
-	<div class="tab-pane" id="preview">
+	<div class="col-md-12 tab-pane" id="preview">
 		<iframe id="preview_site" class="text-center"></iframe>
-		<div class="">
-			<a class="nav-tabs btn btn-warning" id="CancelButton" onClick="revertToDesignTab();">I hate it.</a>
-			<a class="nav-tabs btn btn-info" id="signInButton" href="javascript:void(0)">I love it.</a>
-		</div>
+		<div class="col">
+			<a class="btn btn-warning float-left" id="CancelButton" onClick="revertToDesignTab();">I hate it.</a>
+			<a class="btn btn-info float-right" id="signInButton" onClick="proceedToGeneration();">I love it.</a>
+	  </div>
+	</div>
+
+	<div class="col-md-12 tab-pane alert alert-success" id="success">
+		<h1>Success! Your webpage is now available at: <a id="success_link"></a></h1>
 	</div>
 
 	<script>

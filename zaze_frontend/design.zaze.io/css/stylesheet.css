@@ -1,6 +1,10 @@
 html {
 }
 
+a {
+  white-space: normal;
+}
+
 body {
     background-color: white;
 	text-align: center;
@@ -59,8 +63,16 @@ li a:hover:not(.active) {
 
 iframe
 {
-	width:100vh;
+	width:80vw;
 	border: 0;
 	padding: 5px;
 }
 
+.btn {
+  display: inline-block;
+  padding: 4vw;
+}
+
+.col {
+  width: 80vw;
+}

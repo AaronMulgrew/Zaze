@@ -1,3 +1,5 @@
+var HTMLContents = "";
+
 function completeAndRedirect(auth)
 {
   var formElements = document.getElementById("designForm").elements;
@@ -17,11 +19,12 @@ function completeAndRedirect(auth)
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      console.log(xhr.responseText);
+      //console.log(xhr.responseText);
 	    //document.body.innerHTML = xhr.responseText
       closeTab("userdetails");
       openTab("preview");
-      document.getElementById('title').innerHTML = "Preview Designs"
+      document.getElementById('title').innerHTML = "Preview Designs";
+      HTMLContents = xhr.responseText;
       document.getElementById('preview_site').src = "data:text/html;charset=utf-8," + escape(xhr.responseText);
     }
   };
@@ -37,16 +40,30 @@ function revertToDesignTab()
   closeTab("preview");
 }
 
+function displaySuccess(link)
+{
+  closeTab("preview");
+  document.getElementById("success_link").innerHTML = link;
+  document.getElementById("success_link").href = link;
+  openTab("success");
+}
+
+
+function getUser()
+{
+  var cognitoUser = auth.username;
+  return cognitoUser;
+}
+
 function proceedToGeneration()
 {
-  var formElements = document.getElementById("designForm").elements;
+  var userName = getUser();
+  var title = document.getElementById("designForm").elements["header"].value;
   var jsonData = {};
 
-  for (var i = 0; i < formElements.length; i++)
-  {
-    var elementName = formElements[i].name;
-    jsonData[elementName] = formElements[i].value;
-  }
+  jsonData["username"] = userName;
+  jsonData["HTMLContents"] = HTMLContents;
+  jsonData["title"] = title;
 
   var jwtToken = auth.getSignInUserSession().idToken.jwtToken
   var xhr = new XMLHttpRequest();
@@ -56,12 +73,7 @@ function proceedToGeneration()
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      console.log(xhr.responseText);
-	    //document.body.innerHTML = xhr.responseText
-      closeTab("userdetails");
-      openTab("preview");
-      document.getElementById('title').innerHTML = "Preview Designs"
-      document.getElementById('preview_site').src = "data:text/html;charset=utf-8," + escape(xhr.responseText);
+      displaySuccess(xhr.responseText);
     }
   };
   delete jsonData[""];
