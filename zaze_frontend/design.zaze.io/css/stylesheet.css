@@ -2,13 +2,29 @@ html {
 }
 
 a {
-  white-space: normal !important;
+  word-break: break-all;
 }
 
 body {
-    background-color: white;
+  background-color: white;
+	text-align: center;
+  margin: 0;
+  padding: 0;
+  overflow-x:hidden;
+
+}
+
+#container {
+  width: 100vw;
+  height: 100vh;
+}
+
+h2 {
+    color: black;
+	font-family: Arial;
 	text-align: center;
 }
+
 h1 {
     color: black;
 	font-family: Arial;
@@ -29,15 +45,12 @@ h1 {
 
 #introPara {
     color: #303232;
-	font-family: HelveticaNeue;
 }
 #statusNotAuth {
     color: #d65628;
-	font-family: HelveticaNeue;
 }
 #statusAuth {
     color: #d65628;
-	font-family: HelveticaNeue;
 }
 #startButtons {
 	text-align: center;
@@ -64,15 +77,24 @@ li a:hover:not(.active) {
 iframe
 {
 	width:80vw;
-	border: 0;
+	border: 1px;
 	padding: 5px;
 }
 
-.btn {
+/* .btn {
   display: inline-block;
-  padding: 4vw;
-}
+  margin-left: 10vw;
+  vertical-align: text-bottom !important;
+} */
 
 .col {
   width: 80vw;
+}
+
+.card {
+  max-width: 18rem !important;
+}
+
+.btn {
+  margin-left: 1vw;
 }

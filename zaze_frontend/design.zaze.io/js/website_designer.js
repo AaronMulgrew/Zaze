@@ -49,19 +49,10 @@ function displaySuccess(link)
 }
 
 
-function getUser()
-{
-  var cognitoUser = auth.username;
-  return cognitoUser;
-}
-
 function proceedToGeneration()
 {
-  var userName = getUser();
   var title = document.getElementById("designForm").elements["header"].value;
   var jsonData = {};
-
-  jsonData["username"] = userName;
   jsonData["HTMLContents"] = HTMLContents;
   jsonData["title"] = title;
 

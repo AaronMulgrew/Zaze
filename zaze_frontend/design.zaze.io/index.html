@@ -5,180 +5,82 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="css/stylesheet.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="dist/amazon-cognito-auth.min.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-	<script src="js/handleform.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	<script src="js/website_designer.js"></script>
+	<script src="js/authenicate.js"></script>
+	<script>var auth;</script>
 </head>
 
 <body  onload="onLoad()">
-	<div class="row">
-		<div class="col-md-8">
-			<h1 id="title">
-				Zaze Design.
-			</h1>
-		</div>
-		<div class="col-md-2" id="startButtons">
-			<div class="button">
-				<a class="nav-tabs btn btn-info" id="signInButton" href="javascript:void(0)" title="Sign in">Sign In</a>
+	<div id="container">
+		<div class="row">
+			<div class="col-md-8">
+				<h1 id="title">
+					Zaze
+				</h1>
+			</div>
+			<div class="col-md-2" id="startButtons">
+				<div class="button">
+					<a class="nav-tabs btn btn-info" id="signInButton" href="javascript:void(0)" title="Sign in">Sign In</a>
+				</div>
+			</div>
+			<div class="col-md-12" id="statusNotAuth">
+				<h1> Please sign in.</h1>
 			</div>
 		</div>
-		<div class="col-md-10" id="statusNotAuth">
-			<h1> Please sign in.</h1>
-		</div>
-  <div><br></div>
 
 
-	  <div class="row clearfix tabsWell">
-		<div class="col-md-12 column tab-content">
-			<div class="tab-pane" id="userdetails">
-				<form class="form-horizontal" id="designForm" role="form" action="javascript:completeAndRedirect(auth);" method="POST">
-					<div class="form-group">
-						<label for="title" class="col-xs-12 col-sm-4 col-md-offset-1 col-md-1 control-label">Title:</label>
-						<div class="col-xs-5 col-sm-7 col-md-5 mobile-input-class">
-							<input type="text" class="form-control" id="header" placeholder="Enter Title" name="header">
-						</div>
+		  <div class="row clearfix tabsWell">
+			<div class="col-md-12 column tab-content">
+				<div class="tab-pane" id="userdetails">
+
+					<div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+							<h2 class="display-4 py-2 text-truncate">Zaze Designer.</h2>
+							<div class="px-2">
+									<form class="justify-content-center" id="designForm" role="form" action="javascript:completeAndRedirect(auth);" method="POST">
+											<div class="form-group">
+													<label class="title">Title:</label>
+													<input type="text" class="form-control" id="header" placeholder="Enter Title" name="header">
+											</div>
+											<div class="form-group">
+													<label for="content">Content:</label>
+													<textarea rows="5" class="form-control" id="content" placeholder="Enter Content" name="content"></textarea>
+											</div>
+											<div class="form-group">
+													<label for="colour_picker">Main site colour:</label>
+													<input type="color" name="background-color" value="#ff0000">
+											</div>
+											<div class="form-group">
+													<label for="content">Main font colour:</label>
+													<input type="color" name="font-color" value="#ff0000">
+											</div>
+											<button type="submit" class="btn btn-primary btn-lg">Submit</button>
+									</form>
+							</div>
 					</div>
-					<div class="form-group">
-						<label for="Content:" class="col-xs-12 col-sm-4 col-md-offset-1 col-md-1 control-label">Content:</label>
-						<div class="col-xs-5 col-sm-7 col-md-5 mobile-input-class">
-							<input type="content" class="form-control" id="content" placeholder="Enter Content" name="content">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="colour_picker" class="col-xs-12 col-sm-4 col-md-offset-1 col-md-1 control-label">Main site colour:</label>
-						<div class="col-xs-5 col-sm-7 col-md-5 mobile-input-class">
-							<input type="color" name="background-color" value="#ff0000">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="colour_picker" class="col-xs-12 col-sm-4 col-md-offset-1 col-md-1 control-label">Main font colour:</label>
-						<div class="col-xs-5 col-sm-7 col-md-5 mobile-input-class">
-							<input type="color" name="font-color" value="#ff0000">
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-offset-5 col-10">
-							<button type="submit" class="btn btn-default">Submit</button>
-						</div>
-					</div>
-				</form>
+				</div>
 			</div>
 		</div>
+
+		<div class="col-md-12 tab-pane" id="preview">
+			<iframe id="preview_site" class="text-center"></iframe>
+			<div class="row">
+				<div class="col-6 text-center">
+					<a class="btn btn-warning text-center" id="CancelButton" onClick="revertToDesignTab();">I hate it.</a>
+				</div>
+				<div class="col-6 text-center">
+					<a class="btn btn-info text-center" id="LoveItButton" onClick="proceedToGeneration();">I love it.</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 tab-pane alert alert-success" id="success">
+			<h2>Success! Your webpage is now available at: <br/><a id="success_link"></a></h2>
+		</div>
 	</div>
-
-	<div class="col-md-12 tab-pane" id="preview">
-		<iframe id="preview_site" class="text-center"></iframe>
-		<div class="col">
-			<a class="btn btn-warning float-left" id="CancelButton" onClick="revertToDesignTab();">I hate it.</a>
-			<a class="btn btn-info float-right" id="signInButton" onClick="proceedToGeneration();">I love it.</a>
-	  </div>
-	</div>
-
-	<div class="col-md-12 tab-pane alert alert-success" id="success">
-		<h2>Success! Your webpage is now available at: <a id="success_link"></a></h2>
-	</div>
-
-	<script>
-	var auth;
-
-	async function hideTabPane()
-	{
-		var i, items;
-		items = document.getElementsByClassName("tab-pane");
-		for (i = 0; i < items.length; i++)
-		{
-			items[i].style.display = 'none';
-		}
-	}
-
-	// Operations when the web page is loaded.
-	async function onLoad()
-	{
-		await hideTabPane();
-		document.getElementById("statusNotAuth").style.display = 'block';
-		//document.getElementById("statusAuth").style.display = 'none';
-		// Initiatlize CognitoAuth object
-		auth = initCognitoSDK();
-		document.getElementById("signInButton").addEventListener("click", function() {
-			userButton(auth);
-		});
-		var curUrl = window.location.href;
-		auth.parseCognitoWebResponse(curUrl);
-	}
-
-  // Operation when tab is closed.
-	function closeTab(tabName) {
-		var tab = document.getElementById(tabName);
-		tab.style.display = 'none';
-	}
-
-  // Operation when tab is opened.
-  function openTab(tabName) {
-		var tab = document.getElementById(tabName);
-		tab.style.display = 'block';
-	}
-
-  // Perform user operations.
-	function userButton(auth) {
-		var state = document.getElementById('signInButton').innerHTML;
-		if (state === "Sign Out") {
-			document.getElementById("signInButton").innerHTML = "Sign In";
-			auth.signOut();
-			showSignedOut();
-		} else {
-			auth.getSession();
-		}
-	}
-
-	// Operations when signed in.
-  function showSignedIn(session)
-	{
-		document.getElementById("statusNotAuth").style.display = 'none';
-		//document.getElementById("statusAuth").style.display = 'block';
-		document.getElementById("signInButton").innerHTML = "Sign Out";
-		openTab("userdetails");
-	}
-
-	// Operations when signed out.
-	function showSignedOut()
-	{
-		document.getElementById("statusNotAuth").style.display = 'block';
-		//document.getElementById("statusAuth").style.display = 'none';
-		closeTab("userdetails");
-	}
-
-  // Initialize a cognito auth object.
-	function initCognitoSDK() {
-		var authData = {
-			ClientId : '4psm863oa7vstodkvuaa7e6675', // Your client id here
-			AppWebDomain : 'signin.zaze.io', // Exclude the "https://" part.
-			TokenScopesArray : ['openid'], // like ['openid','email','phone']...
-			RedirectUriSignIn : 'https://dev.zaze.io/',
-			RedirectUriSignOut : 'https://dev.zaze.io/',
-			//IdentityProvider : '<TODO: your identity provider you want to specify here>',
-	    //UserPoolId : '<TODO: your user pool id here>',
-	    //           AdvancedSecurityDataCollectionFlag : <TODO: boolean value indicating whether you want to enable advanced security data collection>
-		};
-		var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
-		// You can also set state parameter
-		// auth.setState(<state parameter>);
-		auth.userhandler = {
-		// 	//onSuccess: <TODO: your onSuccess callback here>,
-		// 	//onFailure: <TODO: your onFailure callback here>
-		 		onSuccess: function(result) {
-		 		//alert("Sign in success");
-		 		showSignedIn(result);
-		 	},
-		 	onFailure: function(err) {
-		 		alert("Error!" + err);
-		 	}
-		};
-		// // The default response_type is "token", uncomment the next line will make it be "code".
-		//auth.useCodeGrantFlow();
-		return auth;
-	}
-	</script>
 </body>
 </html>

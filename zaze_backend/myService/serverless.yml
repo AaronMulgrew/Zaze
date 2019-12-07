@@ -80,9 +80,25 @@ functions:
           path: post_to_s3
           method: post
           cors: true
+          #integration: lambda-proxy
           authorizer:
               type: COGNITO_USER_POOLS
               arn: arn:aws:cognito-idp:us-west-2:667540058414:userpool/us-west-2_hhUeZzp1b
+  get_current_posts:
+    handler: bin/get_current_posts
+    events:
+      - http:
+          path: get_current_posts
+          method: post
+          cors: true
+          #integration: lambda-proxy
+          authorizer:
+              type: COGNITO_USER_POOLS
+              arn: arn:aws:cognito-idp:us-west-2:667540058414:userpool/us-west-2_hhUeZzp1b
+              #claims:
+              #    - email
+              #    - username
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
