@@ -23,7 +23,9 @@ async function onLoad(callback)
   });
   var curUrl = window.location.href;
   auth.parseCognitoWebResponse(curUrl);
-  callback();
+  if (callback != null) {
+    callback();    
+  }
 }
 
 // Operation when tab is closed.

@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"os"
-	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -17,9 +17,7 @@ import (
 
 // BodyRequest is our self-made struct to process JSON request from Client
 type BodyRequest struct {
-	UserName     string `json:"username"`
-	HTMLContents string `json:"HTMLContents"`
-	Title        string `json:"title"`
+	PageName string `json:"PageName"`
 }
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -31,38 +29,43 @@ type Response events.APIGatewayProxyResponse
 // Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Response, error) {
 	// BodyRequest will be used to take the json response from client and build it
+	bodyRequest := BodyRequest{
+		PageName: "",
+	}
+
 	claims := request.RequestContext.Authorizer["claims"]
 	claimMap, claimOK := claims.(map[string]interface{})
 	if claimOK == false {
 		panic(errors.New("Invalid Credentials"))
 	}
 	UserName := claimMap["cognito:username"].(string)
-
+	err := json.Unmarshal([]byte(request.Body), &bodyRequest)
+	if err != nil {
+		exitErrorf("Could not decode JSON object. Error: %v", err)
+	}
+	bucket := aws.String("zaze.io")
+	object := aws.String("user_uploads/static_sites/" + UserName + "/" + string(bodyRequest.PageName))
+	// BodyRequest will be used to take the json response from client and build it
+	log.Print("user_uploads/static_sites/" + UserName + "/" + string(bodyRequest.PageName))
 	svc := s3.New(session.New(), &aws.Config{Region: aws.String("eu-west-2")})
 
-	params := &s3.ListObjectsInput{
-		Bucket: aws.String("zaze.io"),
-		Prefix: aws.String("user_uploads/static_sites/" + UserName),
+	_, err = svc.DeleteObject(&s3.DeleteObjectInput{Bucket: aws.String(*bucket), Key: aws.String(*object)})
+	if err != nil {
+		exitErrorf("Unable to delete object %q from bucket %q, %v", object, bucket, err)
 	}
 
-	listedObjects, _ := svc.ListObjects(params)
-	listedObjectsLength := len(listedObjects.Contents)
-	//var strArray [listedObjectsLength]string
-	strArray := make([]string, listedObjectsLength)
+	err = svc.WaitUntilObjectNotExists(&s3.HeadObjectInput{
+		Bucket: aws.String(*bucket),
+		Key:    aws.String(*object),
+	})
+	if err != nil {
+		exitErrorf("Error occurred while waiting for object %q to be deleted, %v", *object, err)
+	}
 
-	for _, key := range listedObjects.Contents {
-		// make sure we remove the parts of the s3 bucket the client doesn't need.
-		keyItem := strings.Replace(*key.Key, "user_uploads/static_sites/"+UserName+"/", "", -1)
-		strArray = append(strArray, keyItem)
-	}
-	respBody, errJSON := json.Marshal(strArray)
-	if errJSON != nil {
-		exitErrorf("Could not serialise JSON array.")
-	}
 	resp := Response{
 		StatusCode:      200,
 		IsBase64Encoded: false,
-		Body:            string(respBody),
+		Body:            "Deleted OK",
 		Headers: map[string]string{
 			"Content-Type":                "application/json",
 			"Access-Control-Allow-Origin": "*",

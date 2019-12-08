@@ -48,6 +48,38 @@ function displaySuccess(link)
   openTab("success");
 }
 
+function getEditedPageContent(pageName)
+{
+  var jwtToken = auth.getSignInUserSession().idToken.jwtToken
+  var xhr = new XMLHttpRequest();
+  var url = "https://5o3kiu1m91.execute-api.eu-west-2.amazonaws.com/dev/get_edited_site";
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Authorization", "Bearer " + jwtToken);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      alert(xhr.responseText);
+    }
+  };
+  var jsonData;
+  jsonData['Page Name'] = pageName;
+  var data = JSON.stringify(jsonData);
+  xhr.send(data);
+}
+
+
+function designOnLoad()
+{
+  try {
+    edit_page_url = location.hash.split('page=')[1].split('&')[0];
+    getEditedPageContent(edit_page_url);
+  }
+  catch {
+    
+  }
+  onLoad();
+}
+
 
 function proceedToGeneration()
 {
