@@ -6,16 +6,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="css/stylesheet.css">
 	<script src="dist/amazon-cognito-auth.min.js"></script>
+  <script src="js/authenicate.js"></script>
+  <script src="js/all_posts.js"></script>
 	<script src="dist/jquery.min.js"></script>
 	<script src="dist/popper.min.js"></script>
 	<link rel="stylesheet" href="dist/bootstrap.min.css">
 	<script src="dist/bootstrap.min.js"></script>
-	<script src="js/website_designer.js"></script>
-	<script src="js/authenicate.js"></script>
 	<script>var auth;</script>
 </head>
 
-<body  onload="designOnLoad()">
+<body  onload="onload_all_posts();">
 	<div id="container">
 		<div class="row">
 			<div class="col-md-8">
@@ -31,57 +31,32 @@
 			<div class="col-md-12" id="statusNotAuth">
 				<h1> Please sign in.</h1>
 			</div>
-		</div>
-
-
-		  <div class="row clearfix tabsWell">
-			<div class="col-md-12 column tab-content">
-				<div class="tab-pane" id="userdetails">
-
-					<div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
-							<h2 class="display-4 py-2 text-truncate">Zaze Designer.</h2>
-							<div class="px-2">
-									<form class="justify-content-center" id="designForm" role="form" action="javascript:completeAndRedirect(auth);" method="POST">
-											<div class="form-group">
-													<label class="title">Title:</label>
-													<input type="text" class="form-control" id="header" placeholder="Enter Title" name="header">
-											</div>
-											<div class="form-group">
-													<label for="content">Content:</label>
-													<textarea rows="5" class="form-control" id="content" placeholder="Enter Content" name="content"></textarea>
-											</div>
-											<div class="form-group">
-													<label for="colour_picker">Main site colour:</label>
-													<input type="color" name="background-color" value="#ff0000">
-											</div>
-											<div class="form-group">
-													<label for="content">Main font colour:</label>
-													<input type="color" name="font-color" value="#ff0000">
-											</div>
-											<button type="submit" class="btn btn-primary btn-lg">Submit</button>
-									</form>
-							</div>
+	  <div><br></div>
+	  </div>
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete this post?</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button id="deleteButton" type="button" class="btn btn-danger" onclick="delete_post();">Delete Post</button>
 					</div>
 				</div>
 			</div>
 		</div>
-
-
-		<div class="col-md-12 tab-pane" id="preview">
-			<iframe id="preview_site" class="text-center"></iframe>
-			<div class="row">
-				<div class="col-6 text-center">
-					<a class="btn btn-warning text-center" id="CancelButton" onClick="revertToDesignTab();">I hate it.</a>
-				</div>
-				<div class="col-6 text-center">
-					<a class="btn btn-info text-center" id="LoveItButton" onClick="proceedToGeneration();">I love it.</a>
-				</div>
+		<div class="tab-pane" id="userdetails">
+			<h2>My Posts</h2>
+			<div class="text-center">
+				<a type="button" class="btn btn-primary" href="/designer.html">New post</a>
 			</div>
-		</div>
-
-		<div class="col-12 tab-pane alert alert-success" id="success">
-			<h2>Success! Your webpage is now available at: <br/><a id="success_link"></a></h2>
-		</div>
-	</div>
+			<div id="cardsdiv">
+			</div>
+    </div>
+  </div>
 </body>
 </html>

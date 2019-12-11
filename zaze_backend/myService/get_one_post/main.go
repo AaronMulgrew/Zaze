@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -14,6 +16,11 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
+
+// BodyRequest is our self-made struct to process JSON request from Client
+type BodyRequest struct {
+	PostName string `json:"postname"`
+}
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
 // AWS Lambda Proxy Request functionality (default behavior)
@@ -30,32 +37,52 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 		panic(errors.New("Invalid Credentials"))
 	}
 	UserName := claimMap["cognito:username"].(string)
+	// BodyRequest will be used to take the json response from client and build it
+	bodyRequest := BodyRequest{
+		PostName: "",
+	}
+
+	err := json.Unmarshal([]byte(request.Body), &bodyRequest)
+	if err != nil {
+		exitErrorf("Could not decode JSON object. Error: %v", err)
+	}
 
 	svc := s3.New(session.New(), &aws.Config{Region: aws.String("eu-west-2")})
 
-	params := &s3.ListObjectsInput{
+	input := &s3.GetObjectInput{
 		Bucket: aws.String("zaze.io"),
-		Prefix: aws.String("user_uploads/static_sites/" + UserName),
+		Key:    aws.String("user_uploads/static_sites/" + UserName + "/" + bodyRequest.PostName),
+	}
+	result, err := svc.GetObject(input)
+	if err != nil {
+		panic(errors.New("no object found"))
 	}
 
-	listedObjects, _ := svc.ListObjects(params)
-	listedObjectsLength := len(listedObjects.Contents)
-	//var strArray [listedObjectsLength]string
-	strArray := make([]string, listedObjectsLength)
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(result.Body)
+	htmlPost := buf.String()
 
-	for _, key := range listedObjects.Contents {
-		// make sure we remove the parts of the s3 bucket the client doesn't need.
-		keyItem := strings.Replace(*key.Key, "user_uploads/static_sites/"+UserName+"/", "", -1)
-		strArray = append(strArray, keyItem)
+	start, stop := "{{", "}}" // just replace these with whatever you like...
+	sSplits := strings.Split(htmlPost, start)
+	embeddedElements := []string{}
+
+	if len(sSplits) > 1 { // n splits = 1 means start char not found!
+		for _, subStr := range sSplits { // check each substring for end
+			ixEnd := strings.Index(subStr, stop)
+			if ixEnd != -1 {
+				embeddedElements = append(embeddedElements, subStr[:ixEnd])
+			}
+		}
 	}
-	respBody, errJSON := json.Marshal(strArray)
-	if errJSON != nil {
-		exitErrorf("Could not serialise JSON array.")
-	}
+
+	log.Print(embeddedElements)
+	embeddedElementsString := strings.Join(embeddedElements, ",") // join the elements
+	embeddedElementsString = "{" + embeddedElementsString + "}"
+	// but do not add anything to the array
 	resp := Response{
 		StatusCode:      200,
 		IsBase64Encoded: false,
-		Body:            string(respBody),
+		Body:            embeddedElementsString,
 		Headers: map[string]string{
 			"Content-Type":                "application/json",
 			"Access-Control-Allow-Origin": "*",

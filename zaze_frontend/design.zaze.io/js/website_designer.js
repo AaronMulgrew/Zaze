@@ -52,17 +52,21 @@ function getEditedPageContent(pageName)
 {
   var jwtToken = auth.getSignInUserSession().idToken.jwtToken
   var xhr = new XMLHttpRequest();
-  var url = "https://5o3kiu1m91.execute-api.eu-west-2.amazonaws.com/dev/get_edited_site";
+  var url = "https://5o3kiu1m91.execute-api.eu-west-2.amazonaws.com/dev/get_one_post";
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Authorization", "Bearer " + jwtToken);
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      alert(xhr.responseText);
+      //alert(xhr.responseText);
+      var contents = JSON.parse(xhr.responseText);
+      document.getElementById("header").value = contents.headerval;
+      document.getElementById("content").value = contents.contentval;
+      document.getElementById("background-color").value = contents["background-color"];
+      document.getElementById("font-color").value = contents.color;
     }
   };
-  var jsonData;
-  jsonData['Page Name'] = pageName;
+  var jsonData = {'postname':pageName};
   var data = JSON.stringify(jsonData);
   xhr.send(data);
 }
@@ -70,14 +74,18 @@ function getEditedPageContent(pageName)
 
 function designOnLoad()
 {
-  try {
-    edit_page_url = location.hash.split('page=')[1].split('&')[0];
-    getEditedPageContent(edit_page_url);
-  }
-  catch {
-    
-  }
-  onLoad();
+  onLoad(function(){
+    try {
+      edit_page_url = location.hash.split('page=')[1].split('&')[0];
+    }
+    catch {
+      edit_page_url = null;
+    }
+    if(edit_page_url != null)
+    {
+      getEditedPageContent(edit_page_url);
+    }
+  });
 }
 
 

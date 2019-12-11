@@ -32,6 +32,7 @@ provider:
       Resource: "*"
 
 
+
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
@@ -103,6 +104,16 @@ functions:
     events:
       - http:
           path: delete_post
+          method: post
+          cors: true
+          authorizer:
+              type: COGNITO_USER_POOLS
+              arn: arn:aws:cognito-idp:us-west-2:667540058414:userpool/us-west-2_hhUeZzp1b
+  get_one_post:
+    handler: bin/get_one_post
+    events:
+      - http:
+          path: get_one_post
           method: post
           cors: true
           authorizer:

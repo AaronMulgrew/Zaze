@@ -1,8 +1,20 @@
+insert = function insert(main_string, ins_string, pos) {
+   if(typeof(pos) === "undefined") {
+    pos = 0;
+  }
+   if(typeof(ins_string) === "undefined") {
+    ins_string = '';
+  }
+   return main_string.slice(0, pos) + ins_string + main_string.slice(pos);
+}
+
+
 function goto_edit_post(calling_element)
 {
   calling_elem_id = calling_element.id;
   var url = window.location.href.toString();
-  url = url.replace('/all_posts.html','/');
+  var urlIndexInsert = url.indexOf("zaze.io/") + 8;
+  url = insert(url, "designer.html", urlIndexInsert);
   url = url += '&page=' + calling_elem_id;
   window.location.href = url;
 }

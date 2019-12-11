@@ -82,6 +82,11 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	resultWithCSS := strings.Replace(resultWithContent, "<cssvalue>", "background-color:"+bodyRequest.RequestBackgroundColor, -1)
 	resultWithCSSandFont := strings.Replace(resultWithCSS, "<font-color>", "color:"+bodyRequest.RequestFontColor, -1)
 
+	result = strings.Replace(resultWithCSSandFont, "{{headerval}}", "{{\"headerval\":"+"\""+bodyRequest.RequestHeader+"\"}}", -1)
+	resultWithContent = strings.Replace(result, "{{contentval}}", "{{\"contentval\":"+"\""+bodyRequest.RequestContent+"\"}}", -1)
+	resultWithCSS = strings.Replace(resultWithContent, "{{cssval}}", "{{"+"\"background-color\":"+"\""+bodyRequest.RequestBackgroundColor+"\"}}", -1)
+	resultWithCSSandFont = strings.Replace(resultWithCSS, "{{font-col}}", "{{"+"\"color\":"+"\""+bodyRequest.RequestFontColor+"\"}}", -1)
+
 	//for _, b := range result.Buckets {
 	//		fmt.Printf("* %s created on %s\n",
 	//				aws.StringValue(b.Name), aws.TimeValue(b.CreationDate))
