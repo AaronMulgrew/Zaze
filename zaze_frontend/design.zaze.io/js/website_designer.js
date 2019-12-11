@@ -1,5 +1,7 @@
 var HTMLContents = "";
 
+
+
 function completeAndRedirect(auth)
 {
   var formElements = document.getElementById("designForm").elements;

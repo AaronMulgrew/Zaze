@@ -6,13 +6,13 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -20,6 +20,13 @@ import (
 //
 // https://serverless.com/framework/docs/providers/aws/events/apigateway/#lambda-proxy-integration
 type Response events.APIGatewayProxyResponse
+
+// Item Create struct to hold info about new item
+type Item struct {
+	UniqueID  string
+	PostTitle string
+	UserName  string
+}
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Response, error) {
@@ -31,24 +38,41 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	}
 	UserName := claimMap["cognito:username"].(string)
 
-	svc := s3.New(session.New(), &aws.Config{Region: aws.String("eu-west-2")})
-
-	params := &s3.ListObjectsInput{
-		Bucket: aws.String("zaze.io"),
-		Prefix: aws.String("user_uploads/static_sites/" + UserName),
+	sess, err := session.NewSession(&aws.Config{
+		Region: aws.String("eu-west-2")},
+	)
+	if err != nil {
+		exitErrorf("Unable to connect to aws with error %v", err)
 	}
 
-	listedObjects, _ := svc.ListObjects(params)
-	listedObjectsLength := len(listedObjects.Contents)
-	//var strArray [listedObjectsLength]string
-	strArray := make([]string, listedObjectsLength)
+	svc := dynamodb.New(sess)
+	// snippet-end:[dynamodb.go.read_item.session]
 
-	for _, key := range listedObjects.Contents {
-		// make sure we remove the parts of the s3 bucket the client doesn't need.
-		keyItem := strings.Replace(*key.Key, "user_uploads/static_sites/"+UserName+"/", "", -1)
-		strArray = append(strArray, keyItem)
+	// snippet-start:[dynamodb.go.read_item.call]
+	tableName := "Movies"
+
+	result, err := svc.GetItem(&dynamodb.GetItemInput{
+		TableName: aws.String(tableName),
+		Key: map[string]*dynamodb.AttributeValue{
+			"UserName": {
+				N: aws.String(UserName),
+			},
+		},
+	})
+	if err != nil {
+		fmt.Println(err.Error())
 	}
-	respBody, errJSON := json.Marshal(strArray)
+	// snippet-end:[dynamodb.go.read_item.call]
+
+	// snippet-start:[dynamodb.go.read_item.unmarshall]
+	item := Item{}
+
+	err = dynamodbattribute.UnmarshalMap(result.Item, &item)
+	if err != nil {
+		panic(fmt.Sprintf("Failed to unmarshal Record, %v", err))
+	}
+
+	respBody, errJSON := json.Marshal(item)
 	if errJSON != nil {
 		exitErrorf("Could not serialise JSON array.")
 	}

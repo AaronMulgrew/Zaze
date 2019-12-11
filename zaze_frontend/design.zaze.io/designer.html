@@ -44,7 +44,7 @@
 									<form class="justify-content-center" id="designForm" role="form" action="javascript:completeAndRedirect(auth);" method="POST">
 											<div class="form-group">
 													<label class="title">Title:</label>
-													<input type="text" class="form-control" id="header" placeholder="Enter Title" name="header">
+													<input type="text" class="form-control" id="header" placeholder="Enter Title" name="header" onkeyup="nospaces(this);">
 											</div>
 											<div class="form-group">
 													<label for="content">Content:</label>

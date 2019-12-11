@@ -11,12 +11,18 @@ insert = function insert(main_string, ins_string, pos) {
 
 function goto_edit_post(calling_element)
 {
-  calling_elem_id = calling_element.id;
   var url = window.location.href.toString();
   var urlIndexInsert = url.indexOf("zaze.io/") + 8;
   url = insert(url, "designer.html", urlIndexInsert);
-  url = url += '&page=' + calling_elem_id;
+
+
+  if (calling_element != undefined)
+  {
+    calling_elem_id = calling_element.id;
+    url = url += '&page=' + calling_elem_id;
+  }
   window.location.href = url;
+
 }
 
 

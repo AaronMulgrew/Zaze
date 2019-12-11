@@ -13,9 +13,6 @@ async function hideTabPane()
 // Operations when the web page is loaded.
 async function onLoad(callback)
 {
-  try {
-    
-  }
   await hideTabPane();
   document.getElementById("statusNotAuth").style.display = 'block';
   //document.getElementById("statusAuth").style.display = 'none';
@@ -25,6 +22,7 @@ async function onLoad(callback)
     userButton(auth);
   });
   var curUrl = window.location.href;
+
   auth.parseCognitoWebResponse(curUrl);
   if (callback != null) {
     callback();
