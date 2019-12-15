@@ -51,8 +51,9 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 
 	input := &s3.GetObjectInput{
 		Bucket: aws.String("zaze.io"),
-		Key:    aws.String("user_uploads/static_sites/" + UserName + "/" + bodyRequest.PostName),
+		Key:    aws.String("user_uploads/static_sites/" + UserName + "/" + bodyRequest.PostName + ".html"),
 	}
+	log.Print("user_uploads/static_sites/" + UserName + "/" + bodyRequest.PostName + ".html")
 	result, err := svc.GetObject(input)
 	if err != nil {
 		panic(errors.New("no object found"))

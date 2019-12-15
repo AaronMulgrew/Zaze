@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -68,6 +69,8 @@ func AddToDynamoDB(UniqueID string, Title string, UserName string) {
 type BodyRequest struct {
 	HTMLContents string `json:"HTMLContents"`
 	Title        string `json:"title"`
+	Edit         bool   `json:"Edit"`
+	UniqueID     string `json:"UniqueID"`
 }
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -86,13 +89,22 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	bodyRequest := BodyRequest{
 		HTMLContents: "",
 		Title:        "",
+		Edit:         false,
+		UniqueID:     "",
 	}
 
 	err := json.Unmarshal([]byte(request.Body), &bodyRequest)
 	if err != nil {
 		exitErrorf("Could not decode JSON object. Error: %v", err)
 	}
-	uniqueID := guuid.New().String()
+	uniqueID := ""
+	log.Print(bodyRequest.Edit)
+	if bodyRequest.Edit == true {
+		uniqueID = bodyRequest.UniqueID
+
+	} else {
+		uniqueID = guuid.New().String()
+	}
 
 	bucket := "zaze.io"
 	filename := "user_uploads/static_sites/" + UserName + "/" + uniqueID + ".html"

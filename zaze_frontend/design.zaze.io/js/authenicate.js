@@ -15,6 +15,11 @@ async function onLoad(callback)
 {
   await hideTabPane();
   document.getElementById("statusNotAuth").style.display = 'block';
+  //if (window.location.href.indexOf("#id_token=") > -1) {
+  //  auth.signOut();
+  //  showSignedOut();
+  //}
+
   //document.getElementById("statusAuth").style.display = 'none';
   // Initiatlize CognitoAuth object
   auth = initCognitoSDK();

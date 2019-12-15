@@ -26,7 +26,7 @@ function goto_edit_post(calling_element)
 }
 
 
-function generate_card(obj)
+function generate_card(uniqueID, obj_name)
 {
   cardsdiv = document.getElementById("cardsdiv");
   base_div = document.createElement("div");
@@ -34,15 +34,15 @@ function generate_card(obj)
   card_body = document.createElement("div");
   card_body.setAttribute("class", "card-body");
   title = document.createElement("h5");
-  title.innerHTML = obj;
+  title.innerHTML = obj_name;
   edit_button = document.createElement("a");
-  edit_button.id = obj;
+  edit_button.id = uniqueID;
   edit_button.setAttribute("onClick", "goto_edit_post(this)");
   edit_button.setAttribute("class", "btn btn-primary");
   edit_button.innerHTML = "edit post";
   delete_button = document.createElement("button");
   delete_button.setAttribute("class", "btn btn-danger");
-  delete_button.id = obj;
+  delete_button.id = uniqueID;
   delete_button.setAttribute("onclick", "showModal(this);");
 
   delete_button.innerHTML = "delete post";
@@ -90,7 +90,6 @@ function render_all_posts()
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      console.log(xhr.responseText);
 
       // clear out the user details children
       cardsdiv = document.getElementById("cardsdiv");
@@ -102,11 +101,14 @@ function render_all_posts()
 
       for ( var i = 0; i < bucket_items.length; i++)
       {
-        var obj = bucket_items[i];
-
-        if(obj != "")
+        var post_title = bucket_items[i].PostTitle;
+        var uniqueID = bucket_items[i].UniqueID;
+        if(post_title != "")
         {
-          generate_card(obj);
+          if(uniqueID != "")
+          {
+            generate_card(uniqueID, post_title);
+          }
         }
       }
     }

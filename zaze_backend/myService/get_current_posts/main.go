@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/aws/aws-sdk-go/service/dynamodb/expression"
 )
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -44,35 +45,50 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	if err != nil {
 		exitErrorf("Unable to connect to aws with error %v", err)
 	}
-
 	svc := dynamodb.New(sess)
-	// snippet-end:[dynamodb.go.read_item.session]
+	tableName := "zaze-user-posts"
 
-	// snippet-start:[dynamodb.go.read_item.call]
-	tableName := "Movies"
+	filt := expression.Name("UserName").Equal(expression.Value(UserName))
 
-	result, err := svc.GetItem(&dynamodb.GetItemInput{
-		TableName: aws.String(tableName),
-		Key: map[string]*dynamodb.AttributeValue{
-			"UserName": {
-				N: aws.String(UserName),
-			},
-		},
-	})
+	expr, err := expression.NewBuilder().WithFilter(filt).Build()
 	if err != nil {
+		fmt.Println("Got error building expression:")
 		fmt.Println(err.Error())
+		os.Exit(1)
 	}
-	// snippet-end:[dynamodb.go.read_item.call]
+	// snippet-end:[dynamodb.go.scan_items.expr]
 
-	// snippet-start:[dynamodb.go.read_item.unmarshall]
-	item := Item{}
+	// snippet-start:[dynamodb.go.scan_items.call]
+	// Build the query input parameters
+	params := &dynamodb.ScanInput{
+		ExpressionAttributeNames:  expr.Names(),
+		ExpressionAttributeValues: expr.Values(),
+		FilterExpression:          expr.Filter(),
+		TableName:                 aws.String(tableName),
+	}
 
-	err = dynamodbattribute.UnmarshalMap(result.Item, &item)
+	// Make the DynamoDB Query API call
+	result, err := svc.Scan(params)
 	if err != nil {
-		panic(fmt.Sprintf("Failed to unmarshal Record, %v", err))
+		fmt.Println("Query API call failed:")
+		fmt.Println((err.Error()))
+		os.Exit(1)
 	}
 
-	respBody, errJSON := json.Marshal(item)
+	var allItems []Item
+
+	for _, i := range result.Items {
+		item := Item{}
+
+		err = dynamodbattribute.UnmarshalMap(i, &item)
+
+		if err != nil {
+			panic(fmt.Sprintf("Failed to unmarshal Record, %v", err))
+		}
+		allItems = append(allItems, item)
+	}
+
+	respBody, errJSON := json.Marshal(allItems)
 	if errJSON != nil {
 		exitErrorf("Could not serialise JSON array.")
 	}

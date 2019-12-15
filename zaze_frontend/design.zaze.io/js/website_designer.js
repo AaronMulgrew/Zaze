@@ -1,4 +1,5 @@
 var HTMLContents = "";
+var PostName = "";
 
 
 
@@ -52,6 +53,7 @@ function displaySuccess(link)
 
 function getEditedPageContent(pageName)
 {
+  PostName = pageName;
   var jwtToken = auth.getSignInUserSession().idToken.jwtToken
   var xhr = new XMLHttpRequest();
   var url = "https://5o3kiu1m91.execute-api.eu-west-2.amazonaws.com/dev/get_one_post";
@@ -97,6 +99,11 @@ function proceedToGeneration()
   var jsonData = {};
   jsonData["HTMLContents"] = HTMLContents;
   jsonData["title"] = title;
+  if (PostName != "")
+  {
+    jsonData['Edit'] = true;
+    jsonData['UniqueID'] = PostName;
+  }
 
   var jwtToken = auth.getSignInUserSession().idToken.jwtToken
   var xhr = new XMLHttpRequest();
