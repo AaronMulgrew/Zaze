@@ -70,10 +70,11 @@ function getEditedPageContent(pageName)
     if (xhr.readyState === 4 && xhr.status === 200) {
       //alert(xhr.responseText);
       var contents = JSON.parse(xhr.responseText);
-      document.getElementById("header").value = contents.headerval;
-      document.getElementById("content").value = contents.contentval;
-      document.getElementById("background-color").value = contents["background-color"];
-      document.getElementById("font-color").value = contents.color;
+      document.getElementById("header").value = contents[0];
+      quill.clipboard.dangerouslyPasteHTML(contents[1]);
+      //document.getElementById("editor-container").innerHTML = contents[1];
+      document.getElementById("background-color").value = contents[2];
+      document.getElementById("font-color").value = contents[3];
     }
   };
   var jsonData = {'postname':pageName};

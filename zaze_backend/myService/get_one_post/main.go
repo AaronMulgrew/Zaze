@@ -77,13 +77,18 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	}
 
 	log.Print(embeddedElements)
-	embeddedElementsString := strings.Join(embeddedElements, ",") // join the elements
-	embeddedElementsString = "{" + embeddedElementsString + "}"
+	//embeddedElementsString := strings.Join(embeddedElements, "") // join the elements
+	//embeddedElementsString = "{" + embeddedElementsString + "}"
+
+	embeddedElementsJSON, err := json.Marshal(embeddedElements)
+	if err != nil {
+
+	}
 	// but do not add anything to the array
 	resp := Response{
 		StatusCode:      200,
 		IsBase64Encoded: false,
-		Body:            embeddedElementsString,
+		Body:            string(embeddedElementsJSON),
 		Headers: map[string]string{
 			"Content-Type":                "application/json",
 			"Access-Control-Allow-Origin": "*",

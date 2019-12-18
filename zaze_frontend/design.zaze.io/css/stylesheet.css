@@ -6,7 +6,8 @@ a {
 }
 
 body {
-  background-color: white;
+  background-color: #05111e !important;
+  color: #DDD;
 	text-align: center;
   margin: 0;
   padding: 0;
@@ -16,6 +17,14 @@ body {
 
 #editor-container {
   height: 375px;
+}
+
+.ql-snow {
+  background: #DDD;
+}
+
+label {
+  color: honeydew;
 }
 
 
@@ -43,13 +52,13 @@ div {
 }
 
 h2 {
-    color: black;
+  color: #000;
 	font-family: Arial;
 	text-align: center;
 }
 
 h1 {
-    color: black;
+  color: #DDD;
 	font-family: Arial;
 	text-align: center;
 }
@@ -120,4 +129,5 @@ li a:hover:not(.active) {
 
 .btn {
   margin-left: 1vw;
+  border-bottom: 0 !important;
 }

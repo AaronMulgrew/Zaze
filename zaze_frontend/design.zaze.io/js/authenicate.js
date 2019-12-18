@@ -78,8 +78,8 @@ function showSignedOut()
 // Initialize a cognito auth object.
 function initCognitoSDK() {
   var authData = {
-    ClientId : '4psm863oa7vstodkvuaa7e6675', // Your client id here
-    AppWebDomain : 'signin.zaze.io', // Exclude the "https://" part.
+    ClientId : 'trujvvhhjkh5cgqcgvd2t84p9', // Your client id here
+    AppWebDomain : 'auth.zaze.io', // Exclude the "https://" part.
     TokenScopesArray : ['openid'], // like ['openid','email','phone']...
     RedirectUriSignIn : 'https://design.zaze.io/',
     RedirectUriSignOut : 'https://design.zaze.io/',

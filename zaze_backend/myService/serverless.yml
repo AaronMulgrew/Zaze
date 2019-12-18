@@ -83,7 +83,7 @@ functions:
           cors: true
           authorizer:
               type: COGNITO_USER_POOLS
-              arn: arn:aws:cognito-idp:us-west-2:667540058414:userpool/us-west-2_hhUeZzp1b
+              arn: arn:aws:cognito-idp:eu-west-2:667540058414:userpool/eu-west-2_fp2a4fjfu
   post_to_s3:
     handler: bin/post_to_s3
     events:
@@ -94,7 +94,7 @@ functions:
           #integration: lambda-proxy
           authorizer:
               type: COGNITO_USER_POOLS
-              arn: arn:aws:cognito-idp:us-west-2:667540058414:userpool/us-west-2_hhUeZzp1b
+              arn: arn:aws:cognito-idp:eu-west-2:667540058414:userpool/eu-west-2_fp2a4fjfu
   get_current_posts:
     handler: bin/get_current_posts
     events:
@@ -105,7 +105,7 @@ functions:
           #integration: lambda-proxy
           authorizer:
               type: COGNITO_USER_POOLS
-              arn: arn:aws:cognito-idp:us-west-2:667540058414:userpool/us-west-2_hhUeZzp1b
+              arn: arn:aws:cognito-idp:eu-west-2:667540058414:userpool/eu-west-2_fp2a4fjfu
               #claims:
               #    - email
               #    - username
@@ -118,7 +118,7 @@ functions:
           cors: true
           authorizer:
               type: COGNITO_USER_POOLS
-              arn: arn:aws:cognito-idp:us-west-2:667540058414:userpool/us-west-2_hhUeZzp1b
+              arn: arn:aws:cognito-idp:eu-west-2:667540058414:userpool/eu-west-2_fp2a4fjfu
   get_one_post:
     handler: bin/get_one_post
     events:
@@ -128,7 +128,7 @@ functions:
           cors: true
           authorizer:
               type: COGNITO_USER_POOLS
-              arn: arn:aws:cognito-idp:us-west-2:667540058414:userpool/us-west-2_hhUeZzp1b
+              arn: arn:aws:cognito-idp:eu-west-2:667540058414:userpool/eu-west-2_fp2a4fjfu
   generate_index:
     handler: bin/generate_index
     events:
@@ -139,7 +139,7 @@ functions:
           #integration: lambda-proxy
           authorizer:
               type: COGNITO_USER_POOLS
-              arn: arn:aws:cognito-idp:us-west-2:667540058414:userpool/us-west-2_hhUeZzp1b
+              arn: arn:aws:cognito-idp:eu-west-2:667540058414:userpool/eu-west-2_fp2a4fjfu
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
