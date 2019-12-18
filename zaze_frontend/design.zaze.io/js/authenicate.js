@@ -81,8 +81,8 @@ function initCognitoSDK() {
     ClientId : '4psm863oa7vstodkvuaa7e6675', // Your client id here
     AppWebDomain : 'signin.zaze.io', // Exclude the "https://" part.
     TokenScopesArray : ['openid'], // like ['openid','email','phone']...
-    RedirectUriSignIn : 'https://dev.zaze.io/',
-    RedirectUriSignOut : 'https://dev.zaze.io/',
+    RedirectUriSignIn : 'https://design.zaze.io/',
+    RedirectUriSignOut : 'https://design.zaze.io/',
     //IdentityProvider : '<TODO: your identity provider you want to specify here>',
     //UserPoolId : '<TODO: your user pool id here>',
     //           AdvancedSecurityDataCollectionFlag : <TODO: boolean value indicating whether you want to enable advanced security data collection>

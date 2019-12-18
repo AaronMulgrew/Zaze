@@ -13,6 +13,9 @@ function completeAndRedirect(auth)
     var elementName = formElements[i].name;
     jsonData[elementName] = formElements[i].value;
   }
+  var myEditor = document.querySelector('#editor-container')
+  var content = myEditor.children[0].innerHTML
+  jsonData["content"] = content
 
   var jwtToken = auth.getSignInUserSession().idToken.jwtToken
   var xhr = new XMLHttpRequest();
@@ -48,6 +51,9 @@ function displaySuccess(link)
   closeTab("preview");
   document.getElementById("success_link").innerHTML = link;
   document.getElementById("success_link").href = link;
+  user_index_link = "https://users.zaze.io/" + auth.username + "/index.html";
+  document.getElementById("index_link").innerHTML = user_index_link;
+  document.getElementById("index_link").href = user_index_link;
   openTab("success");
 }
 
@@ -113,11 +119,31 @@ function proceedToGeneration()
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      displaySuccess(xhr.responseText);
+      GenerateIndex(xhr.responseText);
     }
   };
   delete jsonData[""];
   console.log(jsonData)
   var data = JSON.stringify(jsonData);
   xhr.send(data);
+}
+
+
+
+
+function GenerateIndex(success_link)
+{
+  var xhr = new XMLHttpRequest();
+  var url = "https://5o3kiu1m91.execute-api.eu-west-2.amazonaws.com/dev/generate_index";
+  var jwtToken = auth.getSignInUserSession().idToken.jwtToken
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Authorization", "Bearer " + jwtToken);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      console.log(xhr.responseText);
+      displaySuccess(success_link);
+    }
+  };
+  xhr.send();
 }

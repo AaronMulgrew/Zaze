@@ -23,6 +23,7 @@ type BodyRequest struct {
 
 // DeleteFromDynamoDB is the global dynamodb deletion function
 func DeleteFromDynamoDB(uniqueID string) {
+	// test
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String("eu-west-2")},
 	)

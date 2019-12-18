@@ -14,6 +14,12 @@ body {
 
 }
 
+#editor-container {
+  height: 375px;
+}
+
+
+
 div {
   padding: 4px;
 }
@@ -91,7 +97,7 @@ li a:hover:not(.active) {
     color: white;
 }
 
-iframe
+#preview_site
 {
 	width:80vw;
 	border: 1px;
