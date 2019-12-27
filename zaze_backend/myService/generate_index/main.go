@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -28,6 +29,13 @@ type Item struct {
 	UniqueID  string
 	PostTitle string
 	UserName  string
+}
+
+// GenerateSitemap is a functon which generates a sitemap.xml and adds it to the users S3 path.
+func GenerateSitemap(allItems []Item, UserName string) {
+	for _, i := range allItems {
+		log.Print(i)
+	}
 }
 
 // AddToS3 is a functon which simply adds that file to S3.
@@ -154,7 +162,7 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 		<div class="container text-center">
 			<h1>` + UserName + `'s Posts</h1>
 	`
-
+	var allItems []Item
 	for _, i := range result.Items {
 		item := Item{}
 
@@ -165,7 +173,7 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 		}
 
 		HTMLContents = HTMLContents + "<h2><a href=\"" + item.UniqueID + ".html\">" + item.PostTitle + "</a></h2>"
-		//allItems = append(allItems, item)
+		allItems = append(allItems, item)
 	}
 	HTMLContents = HTMLContents + `</div></div><script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -173,7 +181,7 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
   </body>
 </html>`
 	AddToS3(HTMLContents, UserName)
-
+	GenerateSitemap(allItems, UserName)
 	resp := Response{
 		StatusCode:      200,
 		IsBase64Encoded: false,

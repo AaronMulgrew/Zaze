@@ -113,7 +113,7 @@ function render_all_posts()
       }
     }
     else if (xhr.readyState === 4 && xhr.status != 200) {
-      alert("Credentials timeout");
+      //alert("Credentials timeout");
       auth.signOut();
       showSignedOut();
     }

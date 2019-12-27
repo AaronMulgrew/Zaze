@@ -1,6 +1,7 @@
 .PHONY: build clean deploy
 
 build:
+	time /T
 	dep ensure -v
 	set GOARCH=amd64
 	set GOOS=linux

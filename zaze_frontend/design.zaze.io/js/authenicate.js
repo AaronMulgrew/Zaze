@@ -64,6 +64,11 @@ function showSignedIn(session)
   document.getElementById("statusNotAuth").style.display = 'none';
   //document.getElementById("statusAuth").style.display = 'block';
   document.getElementById("signInButton").innerHTML = "Sign Out";
+  if (window.location.href.indexOf("#id_token") == -1) {
+    auth.signOut();
+    showSignedOut();
+  }
+
   openTab("userdetails");
 }
 
